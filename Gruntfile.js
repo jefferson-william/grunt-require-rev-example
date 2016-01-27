@@ -4,7 +4,7 @@ module.exports = function (grunt) {
 
   var config = {
     app: 'app',
-    dist: 'dist'
+    dist: 'dist/app'
   };
 
   grunt.initConfig({
@@ -15,7 +15,7 @@ module.exports = function (grunt) {
         expand: true,
         cwd: 'dist',
         src: [
-          'scripts/**/*.js'
+          'scripts/*.js'
         ]
       }
     },
@@ -26,7 +26,11 @@ module.exports = function (grunt) {
       dist: {
         expand: true,
         cwd: 'app/',
-        src: ['**/*'],
+        src: [
+          'scripts/**/*.js',
+          'styles/**/*.css',
+          'bower_components/**/*'
+        ],
         dest: 'dist/'
       }
     },
@@ -83,6 +87,8 @@ module.exports = function (grunt) {
     'watch'
   ]);
 
+  grunt.registerTask('rev', ['requireRev']);
+
 };
 
-// grunt clean && grunt copy && grunt requireRev && grunt browserSync:dist
+// grunt clean && grunt copy && grunt rev && grunt browserSync:dist
