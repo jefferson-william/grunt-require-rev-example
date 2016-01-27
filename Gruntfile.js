@@ -11,11 +11,16 @@ module.exports = function (grunt) {
     config: config,
     watch: {},
     requireRev: {
+      options: {
+        baseDir: 'dist',
+        configFileRequire: 'dist/scripts/bootstrap.js'
+      },
       dist: {
         expand: true,
         cwd: 'dist',
         src: [
-          'scripts/*.js'
+          'scripts/**/*.js',
+          'bower_components/**/*.js'
         ]
       }
     },
@@ -29,7 +34,8 @@ module.exports = function (grunt) {
         src: [
           'scripts/**/*.js',
           'styles/**/*.css',
-          'bower_components/**/*'
+          'bower_components/**/*.js',
+          'bower_components/**/*.css'
         ],
         dest: 'dist/'
       }
@@ -66,6 +72,52 @@ module.exports = function (grunt) {
         }
       }
     },
+    debug: {
+      options: {
+        open: true // do not open node-inspector in Chrome automatically
+      }
+    }
+  });
+
+  grunt.registerTask('debugger', 'My debug task.', function() {
+    var done = this.async();
+    grunt.util.spawn({
+        cmd: 'node',
+        args: ['--debug', 'app.js'],
+        opts: {
+            //cwd: current workin directory
+        }
+      },
+      function (error, result, code) {
+        if (error) {
+          grunt.log.write (result);
+          grunt.fail.fatal(error);
+        }
+
+        done();
+      }
+    );
+
+    grunt.log.writeln('node started');
+
+    grunt.util.spawn({
+        cmd: 'node_modules/node-inspector',
+        args: ['&'],
+        opts: {
+            //cwd: current workin directory
+        }
+      },
+      function (error, result, code) {
+        if (error) {
+          grunt.log.write (result);
+          grunt.fail.fatal(error);
+        }
+
+        done();
+      }
+    );
+
+    grunt.log.writeln ('inspector started');
   });
 
   grunt.loadNpmTasks('grunt-contrib-watch');
@@ -73,6 +125,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-browser-sync');
   grunt.loadNpmTasks('grunt-require-rev');
+  grunt.loadNpmTasks('grunt-debug-task');
 
   grunt.registerTask('default', [
     'browserSync:livereload',
@@ -87,7 +140,8 @@ module.exports = function (grunt) {
     'watch'
   ]);
 
-  grunt.registerTask('rev', ['requireRev']);
+  grunt.registerTask('r', ['clean', 'copy', 'requireRev']);
+  grunt.registerTask('rev', ['clean', 'copy', 'requireRev']);
 
 };
 

@@ -1,16 +1,15 @@
 'use strict';
 
 require.config({
-    baseUrl: '/',
+    baseUrl: '/scripts',
     paths: {
-        'main': 'scripts/main',
-        'jquery': 'scripts/jquery/jquery'
+        'jquery': '../bower_components/jquery/jquery'
     }
 });
 
 require([
-    'jquery',
-    'main'
-], function(jquery, main) {
+    'main',
+    '../bower_components/jquery/jquery'
+], function(jquery, mainController, main) {
     $('body').html('Hello!');
 });
